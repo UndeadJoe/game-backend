@@ -86,7 +86,7 @@ wsServer.on('request', function(request) {
     //     console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
     // });
 
-    var connectionTrain = request.accept('echo-protocol', request.origin);
+    var connectionTrain = request.accept('train-protocol', request.origin);
 
     console.log((new Date()) + ' Connection accepted.');
 
