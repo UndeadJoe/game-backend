@@ -1,6 +1,7 @@
-var app = require('./app/express');
-var debug = require('debug')('game-backend:server');
-var http = require('http');
+var app = require('./app/express'),
+    debug = require('debug')('game-backend:server'),
+    http = require('http'),
+    WebSocketServer = require('websocket').server;
 
 
 var port = process.env.PORT || 3000;
@@ -47,3 +48,57 @@ function onListening() {
         : 'port ' + addr.port;
     debug('Listening on ' + bind);
 }
+
+wsServer = new WebSocketServer({
+    httpServer: server,
+    autoAcceptConnections: false
+});
+
+function originIsAllowed(origin) {
+    // put logic here to detect whether the specified origin is allowed.
+    return true;
+}
+
+wsServer.on('request', function(request) {
+    if (!originIsAllowed(request.origin)) {
+        // Make sure we only accept requests from an allowed origin
+        request.reject();
+        console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
+        return;
+    }
+
+    // var connection = request.accept('echo-protocol', request.origin);
+    //
+    // console.log((new Date()) + ' Connection accepted.');
+    //
+    // connection.on('message', function(message) {
+    //     if (message.type === 'utf8') {
+    //         console.log('Received Message: ' + message.utf8Data);
+    //         connection.sendUTF(message.utf8Data);
+    //     }
+    //     else if (message.type === 'binary') {
+    //         console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
+    //         connection.sendBytes(message.binaryData);
+    //     }
+    // });
+    //
+    // connection.on('close', function(reasonCode, description) {
+    //     console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
+    // });
+
+    var connectionTrain = request.accept('echo-protocol', request.origin);
+
+    console.log((new Date()) + ' Connection accepted.');
+
+    connectionTrain.on('message', function(message) {
+
+        console.log('Sending data');
+        connectionTrain.sendUTF('50');
+
+    });
+
+    connectionTrain.on('close', function(reasonCode, description) {
+        console.log((new Date()) + ' Peer ' + connectionTrain.remoteAddress + ' disconnected.');
+    });
+
+});
