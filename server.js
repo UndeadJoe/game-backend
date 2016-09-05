@@ -93,7 +93,10 @@ wsServer.on('request', function(request) {
     connectionTrain.on('message', function(message) {
 
         console.log('Sending data');
-        connectionTrain.sendUTF('50');
+        connectionTrain.send(JSON.stringify({
+            coordX: 50,
+            coordY: 15
+        }));
 
     });
 
