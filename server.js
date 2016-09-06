@@ -1,7 +1,8 @@
 var app = require('./app/express'),
     debug = require('debug')('game-backend:server'),
     http = require('http'),
-    WebSocketServer = require('websocket').server;
+    WebSocketServer = require('websocket').server,
+    math = require('mathjs');
 
 
 var port = process.env.PORT || 3000;
@@ -94,8 +95,8 @@ wsServer.on('request', function(request) {
 
         console.log('Sending data');
         connectionTrain.send(JSON.stringify({
-            x: 150,
-            y: 100
+            x: math.random(100, 500),
+            y: math.random(100, 500)
         }));
 
     });
