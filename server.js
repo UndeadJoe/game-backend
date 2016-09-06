@@ -2,7 +2,8 @@ var app = require('./app/express'),
     debug = require('debug')('game-backend:server'),
     http = require('http'),
     WebSocketServer = require('websocket').server,
-    math = require('mathjs');
+    math = require('mathjs'),
+    CLIENTS=[];;
 
 
 var port = process.env.PORT || 3000;
@@ -89,16 +90,23 @@ wsServer.on('request', function(request) {
 
     var connectionTrain = request.accept('train-protocol', request.origin);
 
+    CLIENTS.push(connectionTrain);
     console.log((new Date()) + ' Connection accepted.');
 
     connectionTrain.on('message', function(message) {
 
-        console.log('Sending data');
-        connectionTrain.send(JSON.stringify({
-            x: math.random(100, 500),
-            y: math.random(100, 500)
-        }));
+        var xx = math.random(100, 500),
+            yy = math.random(100, 500);
 
+        for (var i=0; i<CLIENTS.length; i++) {
+            CLIENTS[i].send(JSON.stringify({
+                action: 10,
+                data: {
+                    x: xx,
+                    y: yy
+                }
+            }));
+        }
     });
 
     connectionTrain.on('close', function(reasonCode, description) {
