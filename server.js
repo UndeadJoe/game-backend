@@ -94,8 +94,8 @@ wsServer.on('request', function(request) {
 
         console.log('Sending data');
         connectionTrain.send(JSON.stringify({
-            coordX: 50,
-            coordY: 15
+            x: 150,
+            y: 100
         }));
 
     });
