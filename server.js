@@ -15,4 +15,10 @@ io.sockets.on('connection', function (socket) {
     var player = { id: socket.id , path: map.path };
 
     socket.emit('playerConnected', player);
+
+    socket.on('needMap', function () {
+        map.generate();
+        socket.emit('updateMap', { path: map.getMap() });
+    });
+
 });
