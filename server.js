@@ -5,7 +5,11 @@ var app = require('http').createServer(),
     io = require('socket.io').listen(app, { log: true }),
     gameMap = require('./app/map.js');
 
-app.listen(3000);
+var port = process.env.PORT || 3000;
+
+app.listen(port);
+
+console.log('Server started on port:', port);
 
 var map = new gameMap.Map();
 map.create();
