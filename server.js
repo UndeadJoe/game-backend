@@ -15,7 +15,7 @@ io.sockets.on('connection', function (socket) {
     var py = points.y;
     for (var i = 0; i < py.length; i++)
     {
-        py[i] = math.random(32, 900);
+        py[i] = math.round( math.random(32, 900) );
     }
 
     var player = { id: socket.id , path: points };
