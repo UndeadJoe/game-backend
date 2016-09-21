@@ -1,24 +1,24 @@
 var app = require('http').createServer(),
     debug = require('debug')('game-backend:server'),
     math = require('mathjs'),
-    players=[],
-    io = require('socket.io').listen(app, { log: true });
+    players = [],
+    io = require('socket.io').listen(app, { log: true }),
+    gameMap = require('./app/map.js');
 
 app.listen(3000);
 
+var map = new gameMap.Map();
+map.create();
+
 io.sockets.on('connection', function (socket) {
-    var points = {
-        'x': [ 0, 228, 456, 684, 752, 1000 ],
-        'y': [ 240, 240, 240, 240, 240, 240 ]
-    };
 
-    var py = points.y;
-    for (var i = 0; i < py.length; i++)
-    {
-        py[i] = math.round( math.random(32, 900) );
-    }
-
-    var player = { id: socket.id , path: points };
+    var player = { id: socket.id , path: map.path };
 
     socket.emit('playerConnected', player);
+
+    socket.on('needMap', function () {
+        map.generate();
+        socket.emit('updateMap', { path: map.getMap() });
+    });
+
 });
