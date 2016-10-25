@@ -22,5 +22,13 @@
     "type": "git",
     "url": "https://github.com/UndeadJoe/game-backend.git"
   },
-  "engines" : { "node" : ">=4.2.2" }
+  "engines": {
+    "node": ">=4.2.2"
+  },
+  "devDependencies": {
+    "eslint": "^3.8.1",
+    "eslint-config-standard": "^6.2.0",
+    "eslint-plugin-promise": "^3.3.0",
+    "eslint-plugin-standard": "^2.0.1"
+  }
 }

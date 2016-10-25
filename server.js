@@ -1,28 +1,26 @@
-var app = require('http').createServer(),
-    debug = require('debug')('game-backend:server'),
-    math = require('mathjs'),
-    players = [],
-    io = require('socket.io').listen(app, { log: true }),
-    gameMap = require('./app/map.js');
+import app from 'http';
+import gameMap from './app/map.js';
+import io from 'socket.io';
 
-var port = process.env.PORT || 3000;
+let port = process.env.PORT || 3000;
+let map = new gameMap.Map();
+let players = [];
 
+map.create();
+app.createServer();
 app.listen(port);
+io.listen(app, { log: true });
 
 console.log('Server started on port:', port);
 
-var map = new gameMap.Map();
-map.create();
-
 io.sockets.on('connection', function (socket) {
+  let player = { id: socket.id, path: map.path };
+  players.push(player);
 
-    var player = { id: socket.id , path: map.path };
+  socket.emit('playerConnected', player);
 
-    socket.emit('playerConnected', player);
-
-    socket.on('needMap', function () {
-        map.generate();
-        socket.emit('updateMap', { path: map.getMap() });
-    });
-
+  socket.on('needMap', function () {
+    map.generate();
+    socket.emit('updateMap', { path: map.getMap() });
+  });
 });
